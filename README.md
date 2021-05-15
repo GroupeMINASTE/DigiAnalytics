@@ -20,14 +20,21 @@ In this example, we will use `https://app.example.com/` as website URL.
 
 ## Usage
 
-Before sending any request, set your app website URL:
+Setup a shared instance of your analytics object:
 
 ```swift
-DigiAnalytics.shared.baseURL = "https://app.example.com/"
+import DigiAnalytics
+
+extension DigiAnalytics {
+
+    static let shared = DigiAnalytics(baseURL: "https://app.example.com/")
+
+}
 ```
 
 Then, send requests where you want to get analytics (e.g. in a view controller `viewDidAppear(_:)`)
 
 ```swift
-DigiAnalytics.shared.send(path: "home") // Will appear on dashbord as `https://app.example.com/home`
+// Will appear on dashbord as `https://app.example.com/home`
+DigiAnalytics.shared.send(path: "home")
 ```

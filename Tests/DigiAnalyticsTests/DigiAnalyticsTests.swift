@@ -3,13 +3,7 @@ import XCTest
 
 final class DigiAnalyticsTests: XCTestCase {
     
-    override func setUp() {
-        // Log
-        print("Setting up test...")
-        
-        // Set base URL
-        DigiAnalytics.shared.baseURL = "https://test.nathanfallet.me/"
-    }
+    let shared = DigiAnalytics(baseURL: "https://app.example.com/")
     
     func testRequest(path: String) {
         // Test to send a request to API
@@ -19,7 +13,7 @@ final class DigiAnalyticsTests: XCTestCase {
         print("User-Agent: \(Device.userAgent)")
         
         // Send the request
-        DigiAnalytics.shared.send(path: path) { status in
+        shared.send(path: path) { status in
             // Check status
             XCTAssertTrue(status == .ok, "Request failed with status \(status)")
             

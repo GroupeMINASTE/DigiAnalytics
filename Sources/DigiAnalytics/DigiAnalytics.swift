@@ -22,10 +22,6 @@ import APIRequest
 
 public class DigiAnalytics {
     
-    // MARK: - Static instance
-    
-    public static let shared = DigiAnalytics()
-    
     // MARK: - Properties
     
     /// Configuration to fetch API
@@ -41,28 +37,21 @@ public class DigiAnalytics {
     )
     
     /// Base URL for DigiAnalytics website (ending by a /)
-    public var baseURL: String?
+    private var baseURL: String
     
     /// Last sent page (for reffer)
     private var lastRequest: String?
     
     // MARK: - Initializer
     
-    private init() {
-        
+    public init(baseURL: String) {
+        self.baseURL = baseURL
     }
     
     // MARK: - Methods
     
     /// Send a request to API
     public func send(path: String, completionHandler: ((APIResponseStatus) -> Void)? = nil) {
-        // Check that baseURL is defined
-        guard let baseURL = baseURL else {
-            print("Warning: DigiAnalytics baseURL is not defined: request was not sent.")
-            completionHandler?(.error)
-            return
-        }
-        
         // Send the request
         APIRequest("POST", path: "/api/event", configuration: apiConfiguration)
             .with(body: [
@@ -72,9 +61,6 @@ public class DigiAnalytics {
                 "referrer": lastRequest
             ])
             .execute(Int.self) { data, status in
-                // Save this page
-                self.lastRequest = baseURL + path
-                
                 // Complete the request
                 if let data = data {
                     if data == status.rawValue {
@@ -86,6 +72,9 @@ public class DigiAnalytics {
                     completionHandler?(status)
                 }
             }
+        
+        // Save this request
+        lastRequest = baseURL + path
     }
     
 }
