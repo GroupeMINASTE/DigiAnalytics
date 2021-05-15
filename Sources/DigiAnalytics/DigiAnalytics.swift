@@ -28,19 +28,23 @@ public class DigiAnalytics {
     
     // MARK: - Properties
     
-    // Configuration to fetch API
+    /// Configuration to fetch API
     private let apiConfiguration = APIConfiguration(
         host: "digianalytics.fr",
         scheme: "https",
         port: 443,
         headers: {
             return [
-                // Replace default User-Agent header?
-                // Which is $(CFBundleName)/$(CFBundleVersion) CFNetwork/xxx Darwin/xxx
-                "User-Agent": "DigiAnalytics/1.0.0 (\(Device.name))" // ?
+                "User-Agent": Device.userAgent
             ]
         }
     )
+    
+    /// Base URL for DigiAnalytics website (ending by a /)
+    public var baseURL: String?
+    
+    /// Last sent page (for reffer)
+    private var lastRequest: String?
     
     // MARK: - Initializer
     
@@ -50,15 +54,37 @@ public class DigiAnalytics {
     
     // MARK: - Methods
     
-    public func send() {
+    /// Send a request to API
+    public func send(path: String, completionHandler: ((APIResponseStatus) -> Void)? = nil) {
+        // Check that baseURL is defined
+        guard let baseURL = baseURL else {
+            print("Warning: DigiAnalytics baseURL is not defined: request was not sent.")
+            completionHandler?(.error)
+            return
+        }
+        
+        // Send the request
         APIRequest("POST", path: "/api/event", configuration: apiConfiguration)
             .with(body: [
-                "page": "\(App.id):\(App.version)/...",
+                "page": baseURL + path,
                 "screen_resolution": Device.screenResolution,
-                "event": nil
+                "event": nil,
+                "referrer": lastRequest
             ])
             .execute(Int.self) { data, status in
+                // Save this page
+                self.lastRequest = baseURL + path
                 
+                // Complete the request
+                if let data = data {
+                    if data == status.rawValue {
+                        completionHandler?(status)
+                    } else {
+                        completionHandler?(APIResponseStatus.status(forCode: data))
+                    }
+                } else {
+                    completionHandler?(status)
+                }
             }
     }
     

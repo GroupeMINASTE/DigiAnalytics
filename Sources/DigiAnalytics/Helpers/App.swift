@@ -22,11 +22,11 @@ import Foundation
 class App {
     
     static var id: String {
-        return Bundle.main.bundleIdentifier
+        return Bundle.main.bundleIdentifier ?? ""
     }
     
     static var version: String {
-        return Bundle.main.infoDictionary["CFBundleShortVersionString"]
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     }
     
 }
