@@ -42,6 +42,9 @@ public class DigiAnalytics {
     /// Last sent page (for reffer)
     private var lastRequest: String?
     
+    /// Set a custom referrer
+    public var referrer: String?
+    
     // MARK: - Initializer
     
     public init(baseURL: String) {
@@ -58,7 +61,7 @@ public class DigiAnalytics {
                 "page": baseURL + path,
                 "screen_resolution": Device.screenResolution,
                 "event": nil,
-                "referrer": lastRequest
+                "referrer": referrer ?? lastRequest
             ])
             .execute(Int.self) { data, status in
                 // Complete the request
@@ -75,6 +78,7 @@ public class DigiAnalytics {
         
         // Save this request
         lastRequest = baseURL + path
+        referrer = nil
     }
     
 }
