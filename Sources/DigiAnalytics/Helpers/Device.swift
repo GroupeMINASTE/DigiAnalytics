@@ -23,6 +23,10 @@ import Foundation
 import UIKit
 #endif
 
+#if canImport(WatchKit)
+import WatchKit
+#endif
+
 #if canImport(AppKit)
 import AppKit
 #endif
@@ -40,6 +44,8 @@ class Device {
     static var name: String {
         #if os(iOS)
         return UIDevice.current.model
+        #elseif os(watchOS)
+        return WKInterfaceDevice.current().model
         #elseif os(macOS)
         return "Macintosh"
         #endif
@@ -48,6 +54,8 @@ class Device {
     static var cpuAndOS: String {
         #if os(iOS)
         return "CPU iPhone OS"
+        #elseif os(watchOS)
+        return "CPU Apple WatchOS"
         #elseif os(macOS)
         return "Intel Mac OS X"
         #endif
@@ -58,6 +66,8 @@ class Device {
     static var osVersion: String {
         #if os(iOS)
         return UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")
+        #elseif os(watchOS)
+        return WKInterfaceDevice.current().systemVersion.replacingOccurrences(of: ".", with: "_")
         #elseif os(macOS)
         let version = ProcessInfo.processInfo.operatingSystemVersion
         return "\(version.majorVersion)_\(version.minorVersion)_\(version.patchVersion)"
@@ -69,6 +79,8 @@ class Device {
     static var screenWidth: Int {
         #if os(iOS)
         return Int(UIScreen.main.bounds.width)
+        #elseif os(watchOS)
+        return Int(WKInterfaceDevice.current().screenBounds.width)
         #elseif os(macOS)
         return Int(NSScreen.main?.frame.width ?? 0)
         #endif
@@ -77,6 +89,8 @@ class Device {
     static var screenHeight: Int {
         #if os(iOS)
         return Int(UIScreen.main.bounds.height)
+        #elseif os(watchOS)
+        return Int(WKInterfaceDevice.current().screenBounds.height)
         #elseif os(macOS)
         return Int(NSScreen.main?.frame.height ?? 0)
         #endif
