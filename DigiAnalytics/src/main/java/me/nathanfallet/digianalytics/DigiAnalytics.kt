@@ -35,6 +35,7 @@ class DigiAnalytics(var baseURL: String) {
 
     // Methods
 
+    @JvmOverloads
     fun send(path: String, context: Context, completionHandler: ((APIResponseStatus) -> Unit)? = null) {
         // Build the body
         val body = JSONObject()

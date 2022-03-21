@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'me.nathanfallet.digianalytics:digianalytics:1.0.0'
+    implementation 'me.nathanfallet.digianalytics:digianalytics:1.0.1'
 }
 ```
 
